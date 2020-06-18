@@ -2,8 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\StudentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -21,6 +24,7 @@ class Student
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @ApiProperty()
      */
     private $name;
 
@@ -35,9 +39,14 @@ class Student
     private $birthday;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\OneToMany(targetEntity=Grade::class, mappedBy="student", orphanRemoval=true)
      */
-    private $grade;
+    private $grades;
+
+    public function __construct()
+    {
+        $this->grades = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -80,15 +89,50 @@ class Student
         return $this;
     }
 
-    public function getGrade(): ?int
+    /**
+     * @return Collection|Grade[]
+     */
+    public function getGrades(): Collection
     {
-        return $this->grade;
+        return $this->grades;
     }
 
-    public function setGrade(?int $grade): self
+    public function addGrade(Grade $grade): self
     {
-        $this->grade = $grade;
+        if (!$this->grades->contains($grade)) {
+            $this->grades[] = $grade;
+            $grade->setStudent($this);
+        }
 
         return $this;
     }
+
+    public function removeGrade(Grade $grade): self
+    {
+        if ($this->grades->contains($grade)) {
+            $this->grades->removeElement($grade);
+            // set the owning side to null (unless already changed)
+            if ($grade->getStudent() === $this) {
+                $grade->setStudent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getGradesAvg(): ?float
+    {
+        if ($this->grades->isEmpty())
+        {
+            return null;
+        }
+        $total = null;
+
+        /** @var  Grade $grade */
+        foreach ($this->grades as $grade) {
+            $total += $grade->getGrade();
+        }
+        return $total/$this->grades->count();
+    }
+
 }

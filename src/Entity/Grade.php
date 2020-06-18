@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\GradeRepository;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Integer;
 
 /**
  * @ApiResource()
@@ -20,7 +21,7 @@ class Grade
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="float", nullable=true)
      */
     private $grade;
 
@@ -30,7 +31,8 @@ class Grade
     private $subject;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\ManyToOne(targetEntity=Student::class, inversedBy="grades")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $student;
 
@@ -39,12 +41,12 @@ class Grade
         return $this->id;
     }
 
-    public function getGrade(): ?string
+    public function getGrade(): ?float
     {
         return $this->grade;
     }
 
-    public function setGrade(?string $grade): self
+    public function setGrade(float $grade): self
     {
         $this->grade = $grade;
 
@@ -63,12 +65,12 @@ class Grade
         return $this;
     }
 
-    public function getStudent(): ?string
+    public function getStudent(): ?Student
     {
         return $this->student;
     }
 
-    public function setStudent(string $student): self
+    public function setStudent(?Student $student): self
     {
         $this->student = $student;
 
