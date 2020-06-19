@@ -20,9 +20,24 @@ composer install
 php bin/console d:d:c
 ```
 
-### Do the migration with 
+### Upadte the database schema with
+```
+php bin/console d:s:u --force
+```
+
+### Create migration with 
+```
+php bin/console ma:mi
+```
+
+### Excecute the migration with 
 ```
 php bin/console d:m:m -n 
+```
+
+### Start the web server with 
+```
+symfony server:start
 ```
 
 ### Finally runing this app 
