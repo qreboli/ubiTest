@@ -43,6 +43,12 @@ class Student
      */
     private $grades;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Classroom::class, inversedBy="students")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $classroom;
+
     public function __construct()
     {
         $this->grades = new ArrayCollection();
@@ -120,19 +126,38 @@ class Student
         return $this;
     }
 
+    public function getClassroom(): ?Classroom
+    {
+        return $this->classroom;
+    }
+
+    public function setClassroom(?Classroom $classroom): self
+    {
+        $this->classroom = $classroom;
+
+        return $this;
+    }
+
+    // return total grades student
+    public function totalGradesStudent(): float
+    {
+        $total = 0;
+        foreach ($this->grades as $grade)
+        {
+            $total += $grade->getGrade();
+        }
+        return $total;
+    }
+
+    // return student's average grade
     public function getGradesAvg(): ?float
     {
         if ($this->grades->isEmpty())
         {
             return null;
         }
-        $total = null;
-
-        /** @var  Grade $grade */
-        foreach ($this->grades as $grade) {
-            $total += $grade->getGrade();
-        }
-        return $total/$this->grades->count();
+        return $this->TotalGradesStudent()/$this->grades->count();
     }
+
 
 }
