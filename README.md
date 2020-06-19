@@ -2,7 +2,7 @@
 
 *1. For this exercise I used API Platform which made my task easier for route management.*  
 *2. For the database I used Sqlite*  
-*3. To test my different routes I used Postman*
+*3. To test my different routes I used API Plateform app with Nelmio*
 
 ## install project
 
